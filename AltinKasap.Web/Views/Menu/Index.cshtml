@@ -1,0 +1,188 @@
+@model AltinKasap.Web.ViewModels.MenuViewModel
+@{
+    ViewData["Title"] = Model.Restaurant?.Name ?? "Menü";
+}
+
+<div class="ak-page">
+
+    <header class="ak-header">
+        @if (!string.IsNullOrEmpty(Model.Restaurant?.CoverImagePath))
+        {
+            <div class="ak-cover" style="background-image: url('@Model.Restaurant.CoverImagePath')"></div>
+        }
+        <div class="ak-header-inner">
+            <div class="ak-logo-wrap">
+                @if (!string.IsNullOrEmpty(Model.Restaurant?.LogoPath))
+                {
+                    <img src="@Model.Restaurant.LogoPath" alt="@Model.Restaurant.Name" class="ak-logo" />
+                }
+                else
+                {
+                    <div class="ak-logo ak-logo-placeholder">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                    </div>
+                }
+            </div>
+            <h1 class="ak-restaurant-name">@(Model.Restaurant?.Name ?? "Altın Kasap")</h1>
+            <button class="ak-theme-toggle" id="akThemeToggle" aria-label="Tema değiştir">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    @if (Model.ActiveAnnouncements.Any())
+    {
+        <div class="ak-announcements">
+            @foreach (var ann in Model.ActiveAnnouncements)
+            {
+                <div class="ak-announcement"
+                     style="background-color: @(string.IsNullOrEmpty(ann.BackgroundColor) ? "#C8A032" : ann.BackgroundColor); color: @(string.IsNullOrEmpty(ann.TextColor) ? "#FFFFFF" : ann.TextColor);">
+                    <strong>@ann.Title</strong>
+                    @if (!string.IsNullOrEmpty(ann.Message))
+                    {
+                        <span>— @ann.Message</span>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    @if (Model.TodaysSpecial?.Product != null)
+    {
+        <div class="ak-special">
+            <div class="ak-special-badge"><i class="fa-solid fa-star"></i> Şefin Önerisi</div>
+            <div class="ak-special-content">
+                @if (!string.IsNullOrEmpty(Model.TodaysSpecial.Product.ImagePath))
+                {
+                    <img src="@Model.TodaysSpecial.Product.ImagePath" alt="@Model.TodaysSpecial.Product.Name" loading="lazy" />
+                }
+                <div class="ak-special-text">
+                    <h3>@Model.TodaysSpecial.Product.Name</h3>
+                    @if (!string.IsNullOrEmpty(Model.TodaysSpecial.Note))
+                    {
+                        <p>@Model.TodaysSpecial.Note</p>
+                    }
+                    <div class="ak-special-price">@Model.TodaysSpecial.Product.Price.ToString("0.00") ₺</div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <nav class="ak-cat-nav" id="akCatNav">
+        <div class="ak-cat-nav-inner">
+            @foreach (var cat in Model.Categories)
+            {
+                <a href="#cat-@cat.Category.Slug" class="ak-cat-pill" data-cat="@cat.Category.Slug">
+                    @if (!string.IsNullOrEmpty(cat.Category.IconClass))
+                    {
+                        <i class="fa-solid @cat.Category.IconClass"></i>
+                    }
+                    <span>@cat.Category.Name</span>
+                </a>
+            }
+        </div>
+    </nav>
+
+    <div class="ak-categories">
+        @foreach (var cat in Model.Categories)
+        {
+            <section class="ak-category" id="cat-@cat.Category.Slug">
+                <h2 class="ak-category-title">
+                    @if (!string.IsNullOrEmpty(cat.Category.IconClass))
+                    {
+                        <i class="fa-solid @cat.Category.IconClass"></i>
+                    }
+                    @cat.Category.Name
+                </h2>
+
+                @if (!cat.Products.Any())
+                {
+                    <p class="ak-empty">Bu kategoride henüz ürün yok.</p>
+                }
+                else
+                {
+                    <div class="ak-product-grid">
+                        @foreach (var p in cat.Products)
+                        {
+                            <article class="ak-product @(p.IsSoldOut ? "is-soldout" : "")">
+                                @if (!string.IsNullOrEmpty(p.ImagePath))
+                                {
+                                    <div class="ak-product-img">
+                                        <img src="@p.ImagePath" alt="@p.Name" loading="lazy" />
+                                        @if (p.IsSoldOut)
+                                        {
+                                            <span class="ak-soldout-badge">Tükendi</span>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="ak-product-img ak-product-img-placeholder">
+                                        <i class="fa-solid @(string.IsNullOrEmpty(cat.Category.IconClass) ? "fa-utensils" : cat.Category.IconClass)"></i>
+                                        @if (p.IsSoldOut)
+                                        {
+                                            <span class="ak-soldout-badge">Tükendi</span>
+                                        }
+                                    </div>
+                                }
+                                <div class="ak-product-body">
+                                    <h3 class="ak-product-name">@p.Name</h3>
+                                    @if (!string.IsNullOrEmpty(p.Description))
+                                    {
+                                        <p class="ak-product-desc">@p.Description</p>
+                                    }
+                                    <div class="ak-product-meta">
+                                        @if (!string.IsNullOrEmpty(p.Unit))
+                                        {
+                                            <span class="ak-product-unit">@p.Unit</span>
+                                        }
+                                        <span class="ak-product-price">
+                                            @if (p.Price > 0)
+                                            {
+                                                @($"{p.Price:0.00} ₺")
+                                            }
+                                            else
+                                            {
+                                                <text>—</text>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                }
+            </section>
+        }
+    </div>
+
+    <footer class="ak-footer">
+        @if (!string.IsNullOrEmpty(Model.Restaurant?.Address))
+        {
+            <p><i class="fa-solid fa-location-dot"></i> @Model.Restaurant.Address</p>
+        }
+        @if (!string.IsNullOrEmpty(Model.Restaurant?.Phone))
+        {
+            <p><a href="tel:@Model.Restaurant.Phone"><i class="fa-solid fa-phone"></i> @Model.Restaurant.Phone</a></p>
+        }
+        <div class="ak-social">
+            @if (!string.IsNullOrEmpty(Model.Restaurant?.InstagramUrl))
+            {
+                <a href="@Model.Restaurant.InstagramUrl" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            }
+            @if (!string.IsNullOrEmpty(Model.Restaurant?.FacebookUrl))
+            {
+                <a href="@Model.Restaurant.FacebookUrl" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            }
+            @if (!string.IsNullOrEmpty(Model.Restaurant?.WebsiteUrl))
+            {
+                <a href="@Model.Restaurant.WebsiteUrl" target="_blank" rel="noopener" aria-label="Web sitesi"><i class="fa-solid fa-globe"></i></a>
+            }
+        </div>
+        <p class="ak-copyright">© @DateTime.Now.Year @Model.Restaurant?.Name — Tüm hakları saklıdır.</p>
+        <button class="ak-print-btn" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> Menüyü Yazdır / PDF Olarak Kaydet
+        </button>
+    </footer>
+
+</div>

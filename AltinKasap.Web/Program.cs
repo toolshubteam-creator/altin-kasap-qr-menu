@@ -1,3 +1,5 @@
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using AltinKasap.Web.Data;
 using AltinKasap.Web.Models;
 using AltinKasap.Web.Repositories;
@@ -71,6 +73,8 @@ try
 
     builder.Services.AddHttpContextAccessor();
 
+    builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(UnicodeRanges.All));
+
     builder.Services.AddControllersWithViews();
 
     var app = builder.Build();
@@ -93,7 +97,12 @@ try
 
     app.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+        pattern: "{controller=Menu}/{action=Index}/{id?}");
+
+    app.MapControllerRoute(
+        name: "menu_short",
+        pattern: "altin-kasap",
+        defaults: new { controller = "Menu", action = "Index" });
 
     using (var scope = app.Services.CreateScope())
     {
