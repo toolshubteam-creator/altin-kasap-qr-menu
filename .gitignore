@@ -1,0 +1,55 @@
+# Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+Debug/
+Release/
+publish/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# .NET
+*.dll
+*.exe
+*.pdb
+
+# Entity Framework Core
+*.db
+*.db-shm
+*.db-wal
+Migrations/
+
+# Application
+appsettings.Development.json
+appsettings.Production.json
+*.user
+.vs/
+
+# Uploads (but keep .gitkeep files)
+wwwroot/uploads/*
+!wwwroot/uploads/**/.gitkeep
+
+# Logs
+logs/
+*.log
+Serilog*.txt
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
