@@ -52,3 +52,6 @@ Serilog*.txt
 
 # OS
 Thumbs.db
+
+# Claude Code local state
+.claude/

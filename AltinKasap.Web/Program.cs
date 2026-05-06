@@ -1,5 +1,7 @@
 using AltinKasap.Web.Data;
 using AltinKasap.Web.Models;
+using AltinKasap.Web.Repositories;
+using AltinKasap.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -50,6 +52,25 @@ try
     });
 
     builder.Services.AddMemoryCache();
+
+    builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+    builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+    builder.Services.AddScoped<IProductRepository, ProductRepository>();
+    builder.Services.AddScoped<IQrCodeRepository, QrCodeRepository>();
+    builder.Services.AddScoped<IQrScanLogRepository, QrScanLogRepository>();
+    builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+    builder.Services.AddScoped<IDailySpecialRepository, DailySpecialRepository>();
+    builder.Services.AddScoped<IPriceHistoryRepository, PriceHistoryRepository>();
+    builder.Services.AddScoped<IProductTagRepository, ProductTagRepository>();
+    builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+
+    builder.Services.AddScoped<IMenuService, MenuService>();
+    builder.Services.AddScoped<IQrService, QrService>();
+    builder.Services.AddScoped<IReportService, ReportService>();
+    builder.Services.AddScoped<IImageService, ImageService>();
+
+    builder.Services.AddHttpContextAccessor();
+
     builder.Services.AddControllersWithViews();
 
     var app = builder.Build();
