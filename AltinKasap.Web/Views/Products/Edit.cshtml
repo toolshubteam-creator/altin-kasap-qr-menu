@@ -1,0 +1,90 @@
+@model AltinKasap.Web.ViewModels.ProductFormViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Ürünü Düzenle";
+    var categories = (List<AltinKasap.Web.Models.Category>)ViewBag.Categories;
+}
+
+<div class="ak-form-card">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="ExistingImagePath" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="CategoryId" class="form-label"></label>
+                <select asp-for="CategoryId" class="form-select">
+                    @foreach (var c in categories)
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="mb-3 mt-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Description" class="text-danger small"></span>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label asp-for="Unit" class="form-label"></label>
+                <input asp-for="Unit" class="form-control" />
+                <span asp-validation-for="Unit" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Price" class="form-label"></label>
+                <input asp-for="Price" type="number" step="0.01" min="0" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger small"></span>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+        {
+            <div class="mb-3">
+                <label class="form-label">Mevcut Görsel</label>
+                <div>
+                    <img src="@Model.ExistingImagePath" alt="" class="ak-image-preview" style="display:block" />
+                </div>
+                <div class="form-check mt-2">
+                    <input asp-for="RemoveImage" class="form-check-input" />
+                    <label asp-for="RemoveImage" class="form-check-label"></label>
+                </div>
+            </div>
+        }
+
+        <div class="mb-3">
+            <label asp-for="ImageFile" class="form-label">Yeni Görsel (opsiyonel)</label>
+            <input asp-for="ImageFile" type="file" id="ImageFile" accept="image/jpeg,image/png,image/webp" class="form-control" />
+            <span asp-validation-for="ImageFile" class="text-danger small"></span>
+            <small class="text-muted">Yeni görsel yüklendiğinde mevcut görsel silinir.</small>
+            <img id="imagePreview" class="ak-image-preview" alt="" style="display:none" />
+        </div>
+
+        <div class="form-check mb-2">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label"></label>
+        </div>
+        <div class="form-check mb-3">
+            <input asp-for="IsSoldOut" class="form-check-input" />
+            <label asp-for="IsSoldOut" class="form-check-label"></label>
+        </div>
+
+        <button type="submit" class="btn btn-ak-primary">
+            <i class="fa-solid fa-check"></i> Güncelle
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Geri
+        </a>
+    </form>
+</div>

@@ -1,0 +1,76 @@
+@model AltinKasap.Web.ViewModels.DashboardViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="ak-kpi-card">
+            <p class="ak-kpi-label"><i class="fa-solid fa-list"></i> Toplam Kategori</p>
+            <p class="ak-kpi-value">@Model.TotalCategories</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ak-kpi-card">
+            <p class="ak-kpi-label"><i class="fa-solid fa-utensils"></i> Toplam Ürün</p>
+            <p class="ak-kpi-value">@Model.TotalProducts</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ak-kpi-card">
+            <p class="ak-kpi-label"><i class="fa-solid fa-qrcode"></i> Bugünkü QR Tarama</p>
+            <p class="ak-kpi-value">@Model.TodaysScanCount</p>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Son 7 Gün — QR Tarama</h5>
+        <canvas id="scanChart" height="80"></canvas>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Hızlı Eylemler</h5>
+        <a asp-controller="Categories" asp-action="Create" class="btn btn-ak-primary me-2">
+            <i class="fa-solid fa-plus"></i> Kategori Ekle
+        </a>
+        <a asp-controller="Products" asp-action="Create" class="btn btn-ak-primary">
+            <i class="fa-solid fa-plus"></i> Ürün Ekle
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+        (function () {
+            var ctx = document.getElementById('scanChart');
+            if (!ctx) return;
+            var labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Last7DaysReport.Labels));
+            var data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Last7DaysReport.Data));
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tarama',
+                        data: data,
+                        borderColor: '#C8A032',
+                        backgroundColor: 'rgba(200, 160, 50, 0.15)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                }
+            });
+        })();
+    </script>
+}
