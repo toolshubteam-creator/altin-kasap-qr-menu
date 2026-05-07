@@ -35,4 +35,52 @@
             }
         });
     }
+
+    function initSortable() {
+        var el = document.getElementById('sortable-list');
+        if (!el || typeof Sortable === 'undefined') return;
+        var sortType = el.dataset.sortType || 'category';
+
+        Sortable.create(el, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: function () {
+                var ids = Array.prototype.map.call(
+                    el.querySelectorAll('tr[data-id]'),
+                    function (r) { return parseInt(r.dataset.id, 10); }
+                );
+                var token = document.querySelector('input[name="__RequestVerificationToken"]');
+                fetch('/api/sort', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token ? token.value : ''
+                    },
+                    body: JSON.stringify({ type: sortType, orderedIds: ids })
+                }).then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
+                  .then(function (d) {
+                      if (d && d.success) {
+                          var t = document.createElement('div');
+                          t.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
+                          t.style.zIndex = 1080;
+                          t.innerHTML = '<i class="fa-solid fa-check"></i> Sıralama güncellendi';
+                          document.body.appendChild(t);
+                          setTimeout(function () { t.remove(); }, 2000);
+                          var rows = el.querySelectorAll('tr[data-id] .ak-sort-order');
+                          rows.forEach(function (cell, i) { cell.textContent = (i + 1); });
+                      }
+                  })
+                  .catch(function () {
+                      alert('Sıralama güncellenirken hata oluştu.');
+                  });
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSortable);
+    } else {
+        initSortable();
+    }
 })();

@@ -10,7 +10,8 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
 
     public async Task<IEnumerable<Product>> GetByCategoryAsync(int categoryId, bool onlyActive = true)
     {
-        var q = Set.Where(p => p.CategoryId == categoryId);
+        var q = Set.Include(p => p.TagMappings).ThenInclude(m => m.ProductTag)
+                   .Where(p => p.CategoryId == categoryId);
         if (onlyActive) q = q.Where(p => p.IsActive);
         return await q.OrderBy(p => p.SortOrder).ThenBy(p => p.Name).ToListAsync();
     }

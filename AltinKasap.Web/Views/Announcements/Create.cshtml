@@ -1,0 +1,74 @@
+@model AltinKasap.Web.ViewModels.AnnouncementFormViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Yeni Duyuru";
+}
+
+<div class="ak-form-card">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" autofocus />
+            <span asp-validation-for="Title" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Message" class="form-label"></label>
+            <textarea asp-for="Message" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Message" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="LinkUrl" class="form-label"></label>
+            <input asp-for="LinkUrl" class="form-control" placeholder="https://..." />
+            <span asp-validation-for="LinkUrl" class="text-danger small"></span>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label asp-for="StartDate" class="form-label"></label>
+                <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="EndDate" class="form-label"></label>
+                <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label asp-for="BackgroundColor" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="BackgroundColor" type="color" class="form-control form-control-color" />
+                    <input asp-for="BackgroundColor" type="text" class="form-control" />
+                </div>
+                <span asp-validation-for="BackgroundColor" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="TextColor" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="TextColor" type="color" class="form-control form-control-color" />
+                    <input asp-for="TextColor" type="text" class="form-control" />
+                </div>
+                <span asp-validation-for="TextColor" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label"></label>
+        </div>
+
+        <button type="submit" class="btn btn-ak-primary">
+            <i class="fa-solid fa-check"></i> Kaydet
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Geri
+        </a>
+    </form>
+</div>

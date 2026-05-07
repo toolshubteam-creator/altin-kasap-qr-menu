@@ -1,0 +1,81 @@
+@model AltinKasap.Web.ViewModels.ReportViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = Model.Title;
+    var year = (int)ViewBag.Year;
+    var month = (int)ViewBag.Month;
+    var prevDate = new DateTime(year, month, 1).AddMonths(-1);
+    var nextDate = new DateTime(year, month, 1).AddMonths(1);
+}
+
+@await Html.PartialAsync("_ReportsNav")
+
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <a asp-action="Monthly" asp-route-year="@prevDate.Year" asp-route-month="@prevDate.Month" class="btn btn-sm btn-outline-secondary">
+        <i class="fa-solid fa-chevron-left"></i> Önceki Ay
+    </a>
+    <form method="get" class="d-inline-flex align-items-center gap-2">
+        <input type="number" name="year" value="@year" min="2020" max="2100" class="form-control form-control-sm" style="width:90px" />
+        <select name="month" class="form-select form-select-sm" style="width:130px">
+            @for (var m = 1; m <= 12; m++)
+            {
+                var n = new DateTime(2000, m, 1).ToString("MMMM");
+                if (m == month) { <option value="@m" selected>@n</option> } else { <option value="@m">@n</option> }
+            }
+        </select>
+        <button type="submit" class="btn btn-sm btn-ak-primary"><i class="fa-solid fa-search"></i></button>
+    </form>
+    <a asp-action="Monthly" asp-route-year="@nextDate.Year" asp-route-month="@nextDate.Month" class="btn btn-sm btn-outline-secondary">
+        Sonraki Ay <i class="fa-solid fa-chevron-right"></i>
+    </a>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="ak-kpi-card">
+            <p class="ak-kpi-label">Toplam Tarama</p>
+            <p class="ak-kpi-value">@Model.Total</p>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <canvas id="chart" height="80"></canvas>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-sm mb-0">
+            <thead class="table-light"><tr><th>Gün</th><th class="text-end">Tarama</th></tr></thead>
+            <tbody>
+                @for (var i = 0; i < Model.Labels.Length; i++)
+                {
+                    <tr><td>@Model.Labels[i]</td><td class="text-end">@Model.Data[i]</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+        new Chart(document.getElementById('chart'), {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Labels)),
+                datasets: [{
+                    label: 'Tarama',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Data)),
+                    borderColor: '#C8A032',
+                    backgroundColor: 'rgba(200, 160, 50, 0.15)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+        });
+    </script>
+}

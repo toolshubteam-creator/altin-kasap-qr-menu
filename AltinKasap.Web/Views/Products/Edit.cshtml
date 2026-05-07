@@ -3,6 +3,7 @@
     Layout = "_AdminLayout";
     ViewData["Title"] = "Ürünü Düzenle";
     var categories = (List<AltinKasap.Web.Models.Category>)ViewBag.Categories;
+    var allTags = (List<AltinKasap.Web.Models.ProductTag>?)ViewBag.AllTags ?? new List<AltinKasap.Web.Models.ProductTag>();
 }
 
 <div class="ak-form-card">
@@ -70,6 +71,28 @@
             <small class="text-muted">Yeni görsel yüklendiğinde mevcut görsel silinir.</small>
             <img id="imagePreview" class="ak-image-preview" alt="" style="display:none" />
         </div>
+
+        @if (allTags.Any())
+        {
+            <div class="mb-3">
+                <label class="form-label fw-bold">Ürün Etiketleri</label>
+                <div class="ak-tag-checkbox-list">
+                    @foreach (var tag in allTags)
+                    {
+                        var inputId = $"tag-{tag.Id}";
+                        var isChecked = Model.SelectedTagIds.Contains(tag.Id);
+                        <input type="checkbox" name="SelectedTagIds" value="@tag.Id" id="@inputId" checked="@isChecked" />
+                        <label for="@inputId">
+                            @if (!string.IsNullOrEmpty(tag.IconClass))
+                            {
+                                <i class="fa-solid @tag.IconClass"></i>
+                            }
+                            @tag.Name
+                        </label>
+                    }
+                </div>
+            </div>
+        }
 
         <div class="form-check mb-2">
             <input asp-for="IsActive" class="form-check-input" />

@@ -1,0 +1,11 @@
+@{
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    string Cls(string a) => a.Equals(action, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item"><a class="nav-link @Cls("Daily")" asp-action="Daily"><i class="fa-solid fa-calendar-day"></i> Günlük</a></li>
+    <li class="nav-item"><a class="nav-link @Cls("Weekly")" asp-action="Weekly"><i class="fa-solid fa-calendar-week"></i> Haftalık</a></li>
+    <li class="nav-item"><a class="nav-link @Cls("Monthly")" asp-action="Monthly"><i class="fa-solid fa-calendar-days"></i> Aylık</a></li>
+    <li class="nav-item"><a class="nav-link @Cls("Yearly")" asp-action="Yearly"><i class="fa-solid fa-calendar"></i> Yıllık</a></li>
+    <li class="nav-item"><a class="nav-link @Cls("QrCodes")" asp-action="QrCodes"><i class="fa-solid fa-qrcode"></i> QR Bazlı</a></li>
+</ul>

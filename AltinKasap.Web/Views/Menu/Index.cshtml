@@ -131,6 +131,22 @@
                                     {
                                         <p class="ak-product-desc">@p.Description</p>
                                     }
+                                    @if (p.TagMappings != null && p.TagMappings.Any())
+                                    {
+                                        <div class="ak-product-tags">
+                                            @foreach (var mapping in p.TagMappings)
+                                            {
+                                                if (mapping.ProductTag == null) { continue; }
+                                                <span class="ak-tag" style="background:@(mapping.ProductTag.ColorHex ?? "#6B7280"); color:white;">
+                                                    @if (!string.IsNullOrEmpty(mapping.ProductTag.IconClass))
+                                                    {
+                                                        <i class="fa-solid @mapping.ProductTag.IconClass"></i>
+                                                    }
+                                                    @mapping.ProductTag.Name
+                                                </span>
+                                            }
+                                        </div>
+                                    }
                                     <div class="ak-product-meta">
                                         @if (!string.IsNullOrEmpty(p.Unit))
                                         {

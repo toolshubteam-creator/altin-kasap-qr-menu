@@ -40,4 +40,6 @@ public class ProductFormViewModel
 
     [Display(Name = "Tükendi")]
     public bool IsSoldOut { get; set; }
+
+    public List<int> SelectedTagIds { get; set; } = new();
 }

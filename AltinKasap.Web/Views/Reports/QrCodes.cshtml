@@ -1,0 +1,71 @@
+@model IEnumerable<AltinKasap.Web.Models.QrCode>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "QR Bazlı Rapor";
+    var labels = Model.Select(q => q.Name).ToArray();
+    var data = Model.Select(q => (long)(q.ScanLogs?.Count ?? 0)).ToArray();
+    var total = data.Sum();
+}
+
+@await Html.PartialAsync("_ReportsNav")
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="ak-kpi-card">
+            <p class="ak-kpi-label">Toplam Tarama (tüm zamanlar)</p>
+            <p class="ak-kpi-value">@total</p>
+        </div>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card"><div class="card-body text-center text-muted py-5">
+        Henüz QR kod yok. <a asp-controller="QrCodes" asp-action="Create">QR kod oluştur</a>.
+    </div></div>
+}
+else
+{
+    <div class="card mb-3">
+        <div class="card-body">
+            <canvas id="chart" height="100"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead class="table-light"><tr><th>QR Adı</th><th class="text-end">Toplam Tarama</th></tr></thead>
+                <tbody>
+                    @foreach (var q in Model)
+                    {
+                        <tr><td>@q.Name</td><td class="text-end">@(q.ScanLogs?.Count ?? 0)</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @if (Model.Any())
+    {
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@@4.4.3/dist/chart.umd.min.js"></script>
+        <script>
+            new Chart(document.getElementById('chart'), {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(labels)),
+                    datasets: [{
+                        label: 'Tarama',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(data)),
+                        backgroundColor: 'rgba(200, 160, 50, 0.6)',
+                        borderColor: '#C8A032',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } }, indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } }
+            });
+        </script>
+    }
+}

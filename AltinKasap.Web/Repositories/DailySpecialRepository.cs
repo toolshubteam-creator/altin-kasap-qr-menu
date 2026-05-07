@@ -13,6 +13,8 @@ public class DailySpecialRepository : GenericRepository<DailySpecial>, IDailySpe
         var dayStart = date.Date;
         var dayEnd = dayStart.AddDays(1);
         return Set.Include(d => d.Product)
-                  .FirstOrDefaultAsync(d => d.SpecialDate >= dayStart && d.SpecialDate < dayEnd);
+                  .Where(d => d.SpecialDate >= dayStart && d.SpecialDate < dayEnd)
+                  .OrderByDescending(d => d.CreatedAt)
+                  .FirstOrDefaultAsync();
     }
 }

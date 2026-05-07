@@ -63,6 +63,26 @@ body.ak-admin { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Sego
 .ak-thumb-placeholder { width: 50px; height: 50px; border-radius: 6px; background: #F5F6FA; display: inline-flex; align-items: center; justify-content: center; color: #9CA3AF; }
 
 .ak-form-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); max-width: 720px; }
+
+.drag-handle { color: #9CA3AF; padding: 0.25rem 0.5rem; cursor: grab; user-select: none; }
+.drag-handle:hover { color: var(--ak-primary); }
+.drag-handle:active { cursor: grabbing; }
+tr.sortable-ghost { opacity: 0.4; background: #FFF7E0; }
+
+.ak-tag-checkbox-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ak-tag-checkbox-list label {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.8rem; border-radius: 20px;
+    border: 2px solid transparent; cursor: pointer;
+    font-size: 0.85rem; user-select: none;
+    background: #F3F4F6; color: #1F2937;
+    transition: all 0.15s;
+}
+.ak-tag-checkbox-list input[type="checkbox"] { display: none; }
+.ak-tag-checkbox-list input[type="checkbox"]:checked + label {
+    background: var(--ak-primary); color: white;
+    border-color: var(--ak-primary-dark);
+}
 .ak-image-preview { display: block; max-width: 200px; max-height: 200px; border-radius: 8px; margin-top: 0.5rem; border: 1px solid #E5E7EB; }
 
 @media (max-width: 768px) {

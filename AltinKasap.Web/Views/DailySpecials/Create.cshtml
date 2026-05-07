@@ -1,0 +1,52 @@
+@model AltinKasap.Web.ViewModels.DailySpecialFormViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Yeni Günün Önerisi";
+    var grouped = ViewBag.GroupedProducts as IEnumerable<IGrouping<AltinKasap.Web.Models.Category, AltinKasap.Web.Models.Product>>;
+}
+
+<div class="ak-form-card">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="mb-3">
+            <label asp-for="ProductId" class="form-label"></label>
+            <select asp-for="ProductId" class="form-select">
+                <option value="">— Ürün seçin —</option>
+                @if (grouped != null)
+                {
+                    foreach (var g in grouped)
+                    {
+                        <optgroup label="@g.Key.Name">
+                            @foreach (var p in g)
+                            {
+                                <option value="@p.Id">@p.Name (@p.Price.ToString("0.00") ₺)</option>
+                            }
+                        </optgroup>
+                    }
+                }
+            </select>
+            <span asp-validation-for="ProductId" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="SpecialDate" class="form-label"></label>
+            <input asp-for="SpecialDate" type="date" class="form-control" />
+            <span asp-validation-for="SpecialDate" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Note" class="form-label"></label>
+            <textarea asp-for="Note" class="form-control" rows="2" placeholder="ör: Şefin tavsiyesi - el yapımı..."></textarea>
+            <span asp-validation-for="Note" class="text-danger small"></span>
+        </div>
+
+        <button type="submit" class="btn btn-ak-primary">
+            <i class="fa-solid fa-check"></i> Kaydet
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Geri
+        </a>
+    </form>
+</div>

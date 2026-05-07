@@ -1,9 +1,11 @@
+using AltinKasap.Web.Data;
 using AltinKasap.Web.Models;
 using AltinKasap.Web.Repositories;
 using AltinKasap.Web.Services;
 using AltinKasap.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AltinKasap.Web.Controllers.Admin;
 
@@ -16,19 +18,25 @@ public class ProductsController : Controller
     private readonly IImageService _imageService;
     private readonly IMenuService _menuService;
     private readonly IPriceHistoryRepository _priceHistoryRepo;
+    private readonly IProductTagRepository _tagRepo;
+    private readonly AppDbContext _db;
 
     public ProductsController(
         IProductRepository repo,
         ICategoryRepository categoryRepo,
         IImageService imageService,
         IMenuService menuService,
-        IPriceHistoryRepository priceHistoryRepo)
+        IPriceHistoryRepository priceHistoryRepo,
+        IProductTagRepository tagRepo,
+        AppDbContext db)
     {
         _repo = repo;
         _categoryRepo = categoryRepo;
         _imageService = imageService;
         _menuService = menuService;
         _priceHistoryRepo = priceHistoryRepo;
+        _tagRepo = tagRepo;
+        _db = db;
     }
 
     private async Task PopulateCategoriesAsync()
@@ -36,6 +44,31 @@ public class ProductsController : Controller
         ViewBag.Categories = (await _categoryRepo.GetAllAsync())
             .OrderBy(c => c.SortOrder)
             .ToList();
+    }
+
+    private async Task PopulateTagsAsync()
+    {
+        ViewBag.AllTags = (await _tagRepo.GetAllOrderedAsync()).ToList();
+    }
+
+    private async Task SyncTagMappingsAsync(int productId, List<int> tagIds)
+    {
+        var current = await _db.ProductTagMappings
+            .Where(m => m.ProductId == productId)
+            .ToListAsync();
+
+        var newSet = (tagIds ?? new List<int>()).Distinct().ToHashSet();
+        var currentSet = current.Select(m => m.ProductTagId).ToHashSet();
+
+        foreach (var m in current.Where(m => !newSet.Contains(m.ProductTagId)))
+            _db.ProductTagMappings.Remove(m);
+
+        foreach (var newId in newSet.Where(id => !currentSet.Contains(id)))
+            _db.ProductTagMappings.Add(new ProductTagMapping
+            {
+                ProductId = productId,
+                ProductTagId = newId
+            });
     }
 
     [HttpGet("")]
@@ -65,6 +98,7 @@ public class ProductsController : Controller
         if (!ModelState.IsValid)
         {
             await PopulateCategoriesAsync();
+            await PopulateTagsAsync();
             return View(model);
         }
 
@@ -79,6 +113,7 @@ public class ProductsController : Controller
             {
                 ModelState.AddModelError(nameof(model.ImageFile), ex.Message);
                 await PopulateCategoriesAsync();
+                await PopulateTagsAsync();
                 return View(model);
             }
         }
@@ -112,6 +147,7 @@ public class ProductsController : Controller
         if (entity == null) return NotFound();
 
         await PopulateCategoriesAsync();
+        await PopulateTagsAsync();
         return View(new ProductFormViewModel
         {
             Id = entity.Id,
@@ -122,7 +158,8 @@ public class ProductsController : Controller
             Price = entity.Price,
             ExistingImagePath = entity.ImagePath,
             IsActive = entity.IsActive,
-            IsSoldOut = entity.IsSoldOut
+            IsSoldOut = entity.IsSoldOut,
+            SelectedTagIds = entity.TagMappings.Select(m => m.ProductTagId).ToList()
         });
     }
 
@@ -135,6 +172,7 @@ public class ProductsController : Controller
         if (!ModelState.IsValid)
         {
             await PopulateCategoriesAsync();
+            await PopulateTagsAsync();
             return View(model);
         }
 
@@ -153,6 +191,7 @@ public class ProductsController : Controller
             {
                 ModelState.AddModelError(nameof(model.ImageFile), ex.Message);
                 await PopulateCategoriesAsync();
+                await PopulateTagsAsync();
                 return View(model);
             }
         }
@@ -185,6 +224,7 @@ public class ProductsController : Controller
         entity.UpdatedAt = DateTime.UtcNow;
 
         _repo.Update(entity);
+        await SyncTagMappingsAsync(entity.Id, model.SelectedTagIds);
         await _repo.SaveChangesAsync();
         _menuService.InvalidateCache();
         TempData["Success"] = "Ürün güncellendi.";

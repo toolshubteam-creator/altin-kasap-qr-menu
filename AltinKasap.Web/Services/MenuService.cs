@@ -49,7 +49,7 @@ public class MenuService : IMenuService
             categoryWithProducts.Add(new CategoryWithProducts { Category = cat, Products = products });
         }
 
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
         var announcements = (await _announcementRepo.GetActiveAsync(now)).ToList();
         var todaysSpecial = await _dailySpecialRepo.GetForDateAsync(now);
 

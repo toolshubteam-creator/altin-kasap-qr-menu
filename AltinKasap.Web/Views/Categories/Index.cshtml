@@ -5,7 +5,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <p class="text-muted mb-0">@Model.Count() kategori</p>
+    <p class="text-muted mb-0">@Model.Count() kategori — sıralamak için satırları sürükleyin</p>
     <a asp-action="Create" class="btn btn-ak-primary">
         <i class="fa-solid fa-plus"></i> Yeni Kategori
     </a>
@@ -16,6 +16,7 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
+                    <th style="width:36px"></th>
                     <th>#</th>
                     <th>Sıra</th>
                     <th>İkon</th>
@@ -25,12 +26,13 @@
                     <th class="text-end">Eylemler</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="sortable-list" data-sort-type="category">
                 @foreach (var c in Model)
                 {
-                    <tr>
+                    <tr data-id="@c.Id">
+                        <td><span class="drag-handle" title="Sürükle"><i class="fa-solid fa-grip-vertical"></i></span></td>
                         <td>@c.Id</td>
-                        <td>@c.SortOrder</td>
+                        <td class="ak-sort-order">@c.SortOrder</td>
                         <td>
                             @if (!string.IsNullOrEmpty(c.IconClass))
                             {
@@ -66,3 +68,7 @@
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@@1.15.2/Sortable.min.js"></script>
+}

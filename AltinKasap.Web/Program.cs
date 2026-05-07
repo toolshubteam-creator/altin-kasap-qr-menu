@@ -75,6 +75,8 @@ try
 
     builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(UnicodeRanges.All));
 
+    builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
+
     builder.Services.AddControllersWithViews();
 
     var app = builder.Build();

@@ -1,0 +1,67 @@
+@model IEnumerable<AltinKasap.Web.Models.DailySpecial>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Günün Önerisi";
+    var today = DateTime.Today;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="text-muted mb-0">@Model.Count() öneri</p>
+    <a asp-action="Create" class="btn btn-ak-primary">
+        <i class="fa-solid fa-plus"></i> Yeni Öneri
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card"><div class="card-body text-center text-muted py-5">
+        <i class="fa-solid fa-star" style="font-size:2.5rem;opacity:0.4"></i>
+        <p class="mt-3 mb-0">Henüz günün önerisi tanımlanmamış. <a asp-action="Create">İlk öneriyi ekleyin</a>.</p>
+    </div></div>
+}
+else
+{
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Ürün</th>
+                        <th>Fiyat</th>
+                        <th>Not</th>
+                        <th class="text-end">Eylemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in Model)
+                    {
+                        <tr class="@(d.SpecialDate.Date == today ? "table-warning" : "")">
+                            <td>
+                                <strong>@d.SpecialDate.ToString("dd.MM.yyyy")</strong>
+                                @if (d.SpecialDate.Date == today)
+                                {
+                                    <span class="badge bg-warning text-dark ms-2">Bugün</span>
+                                }
+                            </td>
+                            <td>@d.Product?.Name</td>
+                            <td>@(d.Product?.Price.ToString("0.00")) ₺</td>
+                            <td class="small text-muted">@d.Note</td>
+                            <td class="text-end">
+                                <a asp-action="Edit" asp-route-id="@d.Id" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@d.Id" method="post" class="d-inline" onsubmit="return confirm('Bu öneriyi silmek istediğinize emin misiniz?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
