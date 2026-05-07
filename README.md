@@ -1,5 +1,10 @@
 # Altın Kasap Izgara — QR Dijital Menü Sistemi
 
+[![Version](https://img.shields.io/badge/version-1.0.0-C8A032)](https://github.com/toolshubteam-creator/altin-kasap-qr-menu/releases/tag/v1.0.0)
+[![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1)](https://www.mysql.com/)
+
 ASP.NET Core MVC 8 + MySQL ile geliştirilmiş, üçüncü taraf bağımlılığı olmayan, tamamen kendi altyapınızda çalışan modern QR dijital menü sistemi.
 
 ## Özellikler
