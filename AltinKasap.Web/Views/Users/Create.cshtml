@@ -1,0 +1,46 @@
+@model AltinKasap.Web.ViewModels.UserCreateViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Yeni Kullanıcı";
+}
+
+<div class="ak-form-card">
+    <form asp-action="Create" method="post" novalidate>
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert"
+             style="@(ViewData.ModelState.ErrorCount > 0 ? "" : "display:none")"></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="email" autofocus />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+                <small class="text-muted">En az 8 karakter, en az bir büyük harf, küçük harf ve rakam içermeli.</small>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-ak-primary">
+                <i class="fa-solid fa-check"></i> Kaydet
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Geri
+            </a>
+        </div>
+    </form>
+</div>

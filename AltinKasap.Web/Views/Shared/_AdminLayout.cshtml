@@ -30,6 +30,9 @@
             <li class="ak-sidebar-divider"></li>
             <li><a asp-controller="Settings" asp-action="Index" class="@Active("Settings")"><i class="fa-solid fa-gear"></i> Restoran Ayarları</a></li>
             <li class="ak-sidebar-divider"></li>
+            <li><a asp-controller="Users" asp-action="Index" class="@Active("Users")"><i class="fa-solid fa-users-gear"></i> Kullanıcılar</a></li>
+            <li><a asp-controller="Profile" asp-action="Index" class="@Active("Profile")"><i class="fa-solid fa-user"></i> Profilim</a></li>
+            <li class="ak-sidebar-divider"></li>
             <li><a href="/" target="_blank"><i class="fa-solid fa-up-right-from-square"></i> Menüyü Görüntüle</a></li>
         </ul>
         <form asp-controller="Account" asp-action="Logout" method="post" class="ak-sidebar-logout">
