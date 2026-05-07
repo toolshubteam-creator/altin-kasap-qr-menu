@@ -1,0 +1,60 @@
+@model IEnumerable<AltinKasap.Web.Models.QrCode>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "QR Kodlar";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="text-muted mb-0">@Model.Count() QR kod</p>
+    <a asp-action="Create" class="btn btn-ak-primary">
+        <i class="fa-solid fa-plus"></i> Yeni QR Kod
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card"><div class="card-body text-center text-muted py-5">
+        <i class="fa-solid fa-qrcode" style="font-size:2.5rem;opacity:0.4"></i>
+        <p class="mt-3 mb-0">Henüz QR kod oluşturulmamış. <a asp-action="Create">İlk QR kodu oluşturun</a>.</p>
+    </div></div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var q in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <img src="@Url.Action("Preview", new { id = q.Id })" alt="@q.Name"
+                             class="img-fluid mb-3" style="max-width: 220px; background: @q.BackgroundColor; padding: 0.5rem; border-radius: 8px;" />
+                        <h5 class="card-title">@q.Name</h5>
+                        <p class="text-muted small mb-2">
+                            <i class="fa-solid fa-eye"></i> @q.ScanLogs.Count tarama
+                        </p>
+                        <div class="d-flex flex-wrap justify-content-center gap-1">
+                            <a asp-action="DownloadPng" asp-route-id="@q.Id" class="btn btn-sm btn-outline-secondary">
+                                <i class="fa-solid fa-download"></i> PNG
+                            </a>
+                            <a asp-action="DownloadSvg" asp-route-id="@q.Id" class="btn btn-sm btn-outline-secondary">
+                                <i class="fa-solid fa-download"></i> SVG
+                            </a>
+                            <a asp-action="Print" asp-route-id="@q.Id" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                <i class="fa-solid fa-print"></i> A4
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-outline-secondary">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <form asp-action="Delete" asp-route-id="@q.Id" method="post" class="d-inline" onsubmit="return confirm('Bu QR kodu silmek istediğinize emin misiniz?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,52 @@
+@model AltinKasap.Web.ViewModels.QrCodeFormViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Yeni QR Kod";
+}
+
+<div class="ak-form-card">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" placeholder="ör: Masa 1, Bahçe, Vitrin..." autofocus />
+            <span asp-validation-for="Name" class="text-danger small"></span>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label asp-for="ForegroundColor" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="ForegroundColor" type="color" class="form-control form-control-color" />
+                    <input asp-for="ForegroundColor" type="text" class="form-control" />
+                </div>
+                <span asp-validation-for="ForegroundColor" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="BackgroundColor" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="BackgroundColor" type="color" class="form-control form-control-color" />
+                    <input asp-for="BackgroundColor" type="text" class="form-control" />
+                </div>
+                <span asp-validation-for="BackgroundColor" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="LogoFile" class="form-label"></label>
+            <input asp-for="LogoFile" type="file" id="ImageFile" accept="image/jpeg,image/png,image/webp" class="form-control" />
+            <span asp-validation-for="LogoFile" class="text-danger small"></span>
+            <small class="text-muted">Maks. 5 MB. QR kodun ortasına yerleştirilir. Hata düzeltme yüksek (ECC-H) seviyede, logo okunmayı engellemez.</small>
+            <img id="imagePreview" class="ak-image-preview" alt="" style="display:none" />
+        </div>
+
+        <button type="submit" class="btn btn-ak-primary">
+            <i class="fa-solid fa-check"></i> Kaydet
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Geri
+        </a>
+    </form>
+</div>

@@ -6,4 +6,5 @@ public class DashboardViewModel
     public int TotalProducts { get; set; }
     public long TodaysScanCount { get; set; }
     public ReportViewModel Last7DaysReport { get; set; } = new();
+    public List<(string Name, long ScanCount)> TopQrCodes { get; set; } = new();
 }

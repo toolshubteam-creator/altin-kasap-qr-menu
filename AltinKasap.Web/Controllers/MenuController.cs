@@ -17,7 +17,7 @@ public class MenuController : Controller
 
     [HttpGet]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int? qr = null)
     {
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
         if (ip.Length > 45) ip = ip[..45];
@@ -36,7 +36,7 @@ public class MenuController : Controller
             {
                 using var scope = scopeFactory.CreateScope();
                 var scanRepo = scope.ServiceProvider.GetRequiredService<IQrScanLogRepository>();
-                await scanRepo.LogScanAsync(null, ip, ua, referrerOrNull);
+                await scanRepo.LogScanAsync(qr, ip, ua, referrerOrNull);
             }
             catch (Exception ex)
             {

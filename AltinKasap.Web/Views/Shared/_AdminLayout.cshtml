@@ -18,6 +18,7 @@
             <li><a asp-controller="Admin" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" ? "active" : "")"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
             <li><a asp-controller="Categories" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Categories" ? "active" : "")"><i class="fa-solid fa-list"></i> Kategoriler</a></li>
             <li><a asp-controller="Products" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Products" ? "active" : "")"><i class="fa-solid fa-utensils"></i> Ürünler</a></li>
+            <li><a asp-controller="QrCodes" asp-action="Index" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "QrCodes" ? "active" : "")"><i class="fa-solid fa-qrcode"></i> QR Kodlar</a></li>
             <li class="ak-sidebar-divider"></li>
             <li><a href="/" target="_blank"><i class="fa-solid fa-up-right-from-square"></i> Menüyü Görüntüle</a></li>
         </ul>

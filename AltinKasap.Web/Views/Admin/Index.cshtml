@@ -32,15 +32,50 @@
     </div>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title mb-3">Hızlı Eylemler</h5>
-        <a asp-controller="Categories" asp-action="Create" class="btn btn-ak-primary me-2">
-            <i class="fa-solid fa-plus"></i> Kategori Ekle
-        </a>
-        <a asp-controller="Products" asp-action="Create" class="btn btn-ak-primary">
-            <i class="fa-solid fa-plus"></i> Ürün Ekle
-        </a>
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3"><i class="fa-solid fa-trophy text-warning"></i> En Çok Taranan QR Kodlar</h5>
+                @if (!Model.TopQrCodes.Any())
+                {
+                    <p class="text-muted mb-0">Henüz QR kod yok veya hiç tarama olmamış.</p>
+                }
+                else
+                {
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr><th>Ad</th><th class="text-end">Tarama</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var row in Model.TopQrCodes)
+                            {
+                                <tr>
+                                    <td>@row.Name</td>
+                                    <td class="text-end"><span class="badge bg-secondary">@row.ScanCount</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Hızlı Eylemler</h5>
+                <a asp-controller="Categories" asp-action="Create" class="btn btn-ak-primary me-2 mb-2">
+                    <i class="fa-solid fa-plus"></i> Kategori Ekle
+                </a>
+                <a asp-controller="Products" asp-action="Create" class="btn btn-ak-primary me-2 mb-2">
+                    <i class="fa-solid fa-plus"></i> Ürün Ekle
+                </a>
+                <a asp-controller="QrCodes" asp-action="Create" class="btn btn-ak-primary mb-2">
+                    <i class="fa-solid fa-qrcode"></i> QR Kod Oluştur
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 

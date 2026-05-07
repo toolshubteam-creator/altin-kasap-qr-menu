@@ -1,0 +1,67 @@
+@model AltinKasap.Web.ViewModels.QrCodeFormViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "QR Kodu Düzenle";
+}
+
+<div class="ak-form-card">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="ExistingLogoPath" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" autofocus />
+            <span asp-validation-for="Name" class="text-danger small"></span>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label asp-for="ForegroundColor" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="ForegroundColor" type="color" class="form-control form-control-color" />
+                    <input asp-for="ForegroundColor" type="text" class="form-control" />
+                </div>
+                <span asp-validation-for="ForegroundColor" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="BackgroundColor" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="BackgroundColor" type="color" class="form-control form-control-color" />
+                    <input asp-for="BackgroundColor" type="text" class="form-control" />
+                </div>
+                <span asp-validation-for="BackgroundColor" class="text-danger small"></span>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ExistingLogoPath))
+        {
+            <div class="mb-3">
+                <label class="form-label">Mevcut Logo</label>
+                <div>
+                    <img src="@Model.ExistingLogoPath" alt="" class="ak-image-preview" style="display:block" />
+                </div>
+                <div class="form-check mt-2">
+                    <input asp-for="RemoveLogo" class="form-check-input" />
+                    <label asp-for="RemoveLogo" class="form-check-label"></label>
+                </div>
+            </div>
+        }
+
+        <div class="mb-3">
+            <label asp-for="LogoFile" class="form-label">Yeni Logo (opsiyonel)</label>
+            <input asp-for="LogoFile" type="file" id="ImageFile" accept="image/jpeg,image/png,image/webp" class="form-control" />
+            <span asp-validation-for="LogoFile" class="text-danger small"></span>
+            <img id="imagePreview" class="ak-image-preview" alt="" style="display:none" />
+        </div>
+
+        <button type="submit" class="btn btn-ak-primary">
+            <i class="fa-solid fa-check"></i> Güncelle
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Geri
+        </a>
+    </form>
+</div>

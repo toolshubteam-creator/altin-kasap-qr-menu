@@ -34,9 +34,9 @@ appsettings.Production.json
 *.user
 .vs/
 
-# Uploads (but keep .gitkeep files)
-wwwroot/uploads/*
-!wwwroot/uploads/**/.gitkeep
+# Uploads (but keep .gitkeep files) — recurse into subfolders
+**/wwwroot/uploads/**/*
+!**/wwwroot/uploads/**/.gitkeep
 
 # Logs
 logs/
