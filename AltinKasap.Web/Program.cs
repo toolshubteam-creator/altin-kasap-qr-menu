@@ -1,10 +1,12 @@
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using System.Threading.RateLimiting;
 using AltinKasap.Web.Data;
 using AltinKasap.Web.Models;
 using AltinKasap.Web.Repositories;
 using AltinKasap.Web.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -77,22 +79,68 @@ try
 
     builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
 
+    builder.Services.AddRateLimiter(options =>
+    {
+        options.RejectionStatusCode = 429;
+
+        options.AddPolicy("MenuScan", httpContext =>
+        {
+            var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            return RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey: ip,
+                factory: _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 60,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = 0
+                });
+        });
+
+        options.AddPolicy("LoginAttempt", httpContext =>
+        {
+            var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            return RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey: ip,
+                factory: _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 5,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueLimit = 0
+                });
+        });
+    });
+
     builder.Services.AddControllersWithViews();
 
     var app = builder.Build();
 
     if (!app.Environment.IsDevelopment())
     {
-        app.UseExceptionHandler("/Home/Error");
+        app.UseExceptionHandler("/error");
         app.UseHsts();
     }
+
+    app.UseStatusCodePagesWithReExecute("/error/{0}");
 
     app.UseSerilogRequestLogging();
 
     app.UseHttpsRedirection();
+
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+        context.Response.Headers["X-Frame-Options"] = "SAMEORIGIN";
+        context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+        context.Response.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+        await next();
+    });
+
     app.UseStaticFiles();
 
     app.UseRouting();
+
+    app.UseRateLimiter();
 
     app.UseAuthentication();
     app.UseAuthorization();

@@ -1,6 +1,7 @@
 using AltinKasap.Web.Repositories;
 using AltinKasap.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AltinKasap.Web.Controllers;
 
@@ -17,6 +18,7 @@ public class MenuController : Controller
 
     [HttpGet]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    [EnableRateLimiting("MenuScan")]
     public async Task<IActionResult> Index([FromQuery] int? qr = null)
     {
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";

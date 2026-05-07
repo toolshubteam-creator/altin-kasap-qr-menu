@@ -213,6 +213,26 @@ body {
 }
 .ak-print-btn:hover { background: var(--ak-primary-dark); }
 
+.ak-error-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+.ak-error-content { text-align: center; max-width: 500px; }
+.ak-error-icon { font-size: 4rem; color: var(--ak-primary); margin-bottom: 1rem; }
+.ak-error-code { font-size: 5rem; font-weight: 800; color: var(--ak-text-muted); line-height: 1; }
+.ak-error-title { font-size: 1.75rem; margin: 1rem 0 0.5rem; }
+.ak-error-message { color: var(--ak-text-muted); font-size: 1.05rem; margin-bottom: 2rem; }
+.ak-error-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.5rem; background: var(--ak-primary); color: white;
+    text-decoration: none; border-radius: 8px; font-weight: 500;
+    transition: background 0.2s;
+}
+.ak-error-btn:hover { background: var(--ak-primary-dark); color: white; }
+
 @media print {
     .ak-cat-nav, .ak-theme-toggle, .ak-print-btn, .ak-social { display: none; }
     .ak-product { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }

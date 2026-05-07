@@ -1,0 +1,18 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = ViewBag.Title;
+}
+
+<div class="ak-error-page">
+    <div class="ak-error-content">
+        <div class="ak-error-icon">
+            <i class="fa-solid @ViewBag.Icon"></i>
+        </div>
+        <div class="ak-error-code">@ViewBag.StatusCode</div>
+        <h1 class="ak-error-title">@ViewBag.Title</h1>
+        <p class="ak-error-message">@ViewBag.Message</p>
+        <a href="/" class="ak-error-btn">
+            <i class="fa-solid fa-house"></i> Ana Sayfaya Dön
+        </a>
+    </div>
+</div>
